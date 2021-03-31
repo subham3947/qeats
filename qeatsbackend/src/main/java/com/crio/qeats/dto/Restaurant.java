@@ -7,8 +7,11 @@
 
 package com.crio.qeats.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -34,6 +37,7 @@ import lombok.NoArgsConstructor;
 //  ]
 // }
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Restaurant {
   @Getter  
   private String restaurantId;
@@ -75,7 +79,7 @@ public class Restaurant {
   }
 
   @JsonSetter("latitude")
-  public void setLattitue(double latitude) {
+  public void setLatitude(double latitude) {
     this.latitude = latitude;
   }
 
