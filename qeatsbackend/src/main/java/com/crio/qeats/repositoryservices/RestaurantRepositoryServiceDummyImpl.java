@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 @Repository
+
 public class RestaurantRepositoryServiceDummyImpl implements RestaurantRepositoryService {
   private static final String FIXTURES = "fixtures/exchanges";
   private ObjectMapper objectMapper = new ObjectMapper();
@@ -37,6 +38,7 @@ public class RestaurantRepositoryServiceDummyImpl implements RestaurantRepositor
   public List<Restaurant> findAllRestaurantsCloseBy(Double latitude, Double longitude,
       LocalTime currentTime, Double servingRadiusInKms) {
     List<Restaurant> restaurantList = new ArrayList<>();
+
     try {
       restaurantList = loadRestaurantsDuringNormalHours();
     } catch (IOException e) {

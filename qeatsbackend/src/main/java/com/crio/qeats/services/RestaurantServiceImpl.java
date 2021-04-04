@@ -39,18 +39,19 @@ public class RestaurantServiceImpl implements RestaurantService {
   @Override
   public GetRestaurantsResponse findAllRestaurantsCloseBy(
       GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
-    List<Restaurant> restaurant;
+    List<Restaurant> restaurant = new ArrayList<>();
     int hour = currentTime.getHour();
+    
     if ((hour >= 8 && hour <= 10) || (hour >= 13 && hour <= 14) || (hour >= 19 && hour <= 21)) {
       restaurant = restaurantRepositoryService.findAllRestaurantsCloseBy(
         getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(), currentTime, 
           peakHoursServingRadiusInKms);
     } else {
-      //log.info("Calling with NormalHours");
       restaurant = restaurantRepositoryService.findAllRestaurantsCloseBy(
         getRestaurantsRequest.getLatitude(), getRestaurantsRequest.getLongitude(), currentTime, 
         normalHoursServingRadiusInKms);
     }
+    
     GetRestaurantsResponse getRestaurantsResponse = new GetRestaurantsResponse(restaurant);
     log.info(getRestaurantsResponse);
     return getRestaurantsResponse;
