@@ -38,7 +38,6 @@ public class RestaurantRepositoryServiceDummyImpl implements RestaurantRepositor
   public List<Restaurant> findAllRestaurantsCloseBy(Double latitude, Double longitude,
       LocalTime currentTime, Double servingRadiusInKms) {
     List<Restaurant> restaurantList = new ArrayList<>();
-
     try {
       restaurantList = loadRestaurantsDuringNormalHours();
     } catch (IOException e) {

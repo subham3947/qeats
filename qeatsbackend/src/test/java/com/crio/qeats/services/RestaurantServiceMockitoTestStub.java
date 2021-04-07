@@ -92,7 +92,6 @@ public class RestaurantServiceMockitoTestStub {
         .findAllRestaurantsCloseBy(any(Double.class), any(Double.class), any(LocalTime.class),
             servingRadiusInKms.capture());
 
-
   }
 
 
