@@ -6,10 +6,13 @@
 
 package com.crio.qeats.controller;
 
+import com.crio.qeats.dto.Restaurant;
 import com.crio.qeats.exchanges.GetRestaurantsRequest;
 import com.crio.qeats.exchanges.GetRestaurantsResponse;
 import com.crio.qeats.services.RestaurantService;
 import java.time.LocalTime;
+import java.util.List;
+
 import javax.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 
@@ -22,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 
 // TODO: CRIO_TASK_MODULE_RESTAURANTSAPI
 // Implement Controller using Spring annotations.
@@ -44,30 +46,34 @@ public class RestaurantController {
   @Autowired
   private RestaurantService restaurantService;
 
-
-
   @GetMapping(RESTAURANTS_API)
-  public ResponseEntity<GetRestaurantsResponse> getRestaurants(
-       GetRestaurantsRequest getRestaurantsRequest) {
+  public ResponseEntity<GetRestaurantsResponse> 
+      getRestaurants(GetRestaurantsRequest getRestaurantsRequest) {
 
     log.info("getRestaurants called with {}", getRestaurantsRequest);
     GetRestaurantsResponse getRestaurantsResponse;
 
-
-    //CHECKSTYLE:OFF
+    // CHECKSTYLE:OFF
     if (getRestaurantsRequest.getLatitude() != null && getRestaurantsRequest.getLongitude() != null
         && getRestaurantsRequest.getLatitude() >= -90 && getRestaurantsRequest.getLatitude() <= 90
-        && getRestaurantsRequest.getLongitude() >= -180 && getRestaurantsRequest.getLongitude() 
-         <= 180) {
-      getRestaurantsResponse = restaurantService.findAllRestaurantsCloseBy(getRestaurantsRequest, 
-      LocalTime.now());
-      log.info("getRestaurants returned {}", getRestaurantsResponse);
+        && getRestaurantsRequest.getLongitude() >= -180 
+        && getRestaurantsRequest.getLongitude() <= 180) {
+      getRestaurantsResponse = restaurantService.findAllRestaurantsCloseBy(
+        getRestaurantsRequest, LocalTime.now());
+      List<Restaurant> restaurants = getRestaurantsResponse.getRestaurants();
+      for (Restaurant res : restaurants) {
+        res.setName(res.getName().replaceAll("[^\\x00-\\x7F]", "?"));
+      }
+      getRestaurantsResponse.setRestaurants(restaurants);
+
+      
       return ResponseEntity.ok().body(getRestaurantsResponse);
     } else {
       return ResponseEntity.badRequest().body(null);
     }
 
   }
+
 
   // TIP(MODULE_MENUAPI): Model Implementation for getting menu given a restaurantId.
   // Get the Menu for the given restaurantId

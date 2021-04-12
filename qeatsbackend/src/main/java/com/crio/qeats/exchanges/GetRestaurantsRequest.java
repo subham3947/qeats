@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
-@RestController
 @AllArgsConstructor
 public class GetRestaurantsRequest {
   @NonNull

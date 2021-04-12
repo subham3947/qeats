@@ -82,8 +82,7 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
       }
 
     }
-    System.out.print("List:" + restaurants);
-
+    
     //CHECKSTYLE:OFF
     //CHECKSTYLE:ON
 
