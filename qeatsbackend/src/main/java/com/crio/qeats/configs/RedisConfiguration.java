@@ -48,10 +48,16 @@ public class RedisConfiguration {
    */
   @PostConstruct
   public void initCache() {
-    JedisPoolConfig jedisPoolConfig = buildPoolConfig();
-    jedisPoolConfig.setMaxTotal(120);
-    jedisPool = new JedisPool(jedisPoolConfig,redisHost, redisPort);
+    try {
+      JedisPoolConfig jedisPoolConfig = buildPoolConfig();
+      jedisPoolConfig.setMaxTotal(120);
+      jedisPool = new JedisPool(jedisPoolConfig,redisHost, redisPort);
 
+    } catch (Exception e) {
+      //TODO: handle exception
+      System.out.print("Failed to init cache");
+    }
+    
   }
 
   /**

@@ -102,7 +102,6 @@ public class RestaurantRepositoryServiceTest {
 
     List<Restaurant> allRestaurantsCloseBy = restaurantRepositoryService
         .findAllRestaurantsCloseBy(20.0, 30.0, LocalTime.of(18, 1), 3.0);
-
     //verify(restaurantRepository, times(1)).findAll();
     assertEquals(2, allRestaurantsCloseBy.size());
     assertEquals("11", allRestaurantsCloseBy.get(0).getRestaurantId());
@@ -114,8 +113,6 @@ public class RestaurantRepositoryServiceTest {
   void noRestaurantsNearBy(@Autowired MongoTemplate mongoTemplate) {
     assertNotNull(mongoTemplate);
     assertNotNull(restaurantRepositoryService);
-
-    
 
     List<Restaurant> allRestaurantsCloseBy = restaurantRepositoryService
         .findAllRestaurantsCloseBy(20.9, 30.0, LocalTime.of(18, 00), 3.0);

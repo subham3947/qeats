@@ -62,7 +62,6 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
   private boolean isOpenNow(LocalTime time, RestaurantEntity res) {
     LocalTime openingTime = LocalTime.parse(res.getOpensAt());
     LocalTime closingTime = LocalTime.parse(res.getClosesAt());
-
     return time.isAfter(openingTime) && time.isBefore(closingTime);
   }
 
@@ -102,56 +101,62 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
 
   // CHECKSTYLE:OFF
   // CHECKSTYLE:ON
-  public List<Restaurant> findAllRestaurantsCloseBy(
-      Double latitude, Double longitude, LocalTime currentTime,
-        Double servingRadiusInKms) {
-    List<Restaurant> restaurants = new ArrayList<Restaurant>();
+  public List<Restaurant> findAllRestaurantsCloseBy(Double latitude, Double longitude, 
+      LocalTime currentTime,Double servingRadiusInKms) {
     List<RestaurantEntity> restaurantEntities = null;
-    
     JedisPool jedisPool = redisConfiguration.getJedisPool();
     try {
       Jedis jedis = jedisPool.getResource();
-      restaurantEntities = setupCache(jedis, getGeohash(latitude, longitude));
-      System.out.println("Got cache");
+      String restaurantsJson = jedis.get(getGeohash(latitude, longitude)); 
+      if (restaurantsJson == null) {
+        restaurantEntities = setupCache(jedis, getGeohash(latitude, longitude));
+      } else {
+        restaurantEntities = new ObjectMapper().readValue(restaurantsJson,
+          new TypeReference<List<RestaurantEntity>>() {});
+      }
     } catch (Exception e) {
-      //TODO: handle exception
       restaurantEntities = restaurantRepository.findAll();
+      System.out.print("Called");
     }
-    
-    
-    for (int i = 0; i < restaurantEntities.size(); i++) {
-      if (isOpenNow(currentTime, restaurantEntities.get(i)) 
-          && isRestaurantCloseByAndOpen(restaurantEntities.get(i), currentTime,
+    List<Restaurant> restaurants = new ArrayList<Restaurant>();
+    for (RestaurantEntity restaurantEntity : restaurantEntities) {
+      if (isOpenNow(currentTime, restaurantEntity) 
+          && isRestaurantCloseByAndOpen(restaurantEntity, currentTime,
           latitude, longitude, servingRadiusInKms)) {
-        Restaurant res = modelMapperProvider.map(restaurantEntities.get(i), Restaurant.class);
+        Restaurant res = modelMapperProvider.map(restaurantEntity, Restaurant.class);
         restaurants.add(res);
       }
     }
     return restaurants;
   }
 
-  public List<RestaurantEntity> setupCache(Jedis jedis, String geoHash) {
+  public List<RestaurantEntity> setupCache(Jedis jedis, String geoHash) throws IOException {
     List<RestaurantEntity> restaurantEntities = new ArrayList<RestaurantEntity>();
-    String restaurantsJson = jedis.get(geoHash); 
-    if (restaurantsJson == null) {    
-      restaurantEntities =  restaurantRepository.findAll();
-      try {
-        restaurantsJson = new ObjectMapper().writeValueAsString(restaurantEntities);
-        jedis.set(geoHash, restaurantsJson);
-      } catch (JsonProcessingException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }     
-    }
+    restaurantEntities =  restaurantRepository.findAll();
+    System.out.print("Called");
     try {
-      restaurantEntities = new ObjectMapper().readValue(restaurantsJson,
-         new TypeReference<List<RestaurantEntity>>() {});
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
+      String restaurantsJson = new ObjectMapper().writeValueAsString(restaurantEntities);
+      jedis.set(geoHash, restaurantsJson);
+    } catch (JsonProcessingException e) {
       e.printStackTrace();
-    } 
+    }     
     return restaurantEntities;
   }
+
+  // public List<Restaurant> getRestaurantList(List<RestaurantEntity> restaurantEntities) {
+  //   List<Restaurant> restaurants = new ArrayList<Restaurant>();
+  //   for (RestaurantEntity restaurantEntity : restaurantEntities) {
+  //     if (isOpenNow(currentTime, restaurantEntity.) 
+  //         && isRestaurantCloseByAndOpen(restaurantEntity, currentTime,
+  //         latitude, longitude, servingRadiusInKms)) {
+  //       Restaurant res = modelMapperProvider.map(restaurantEntity, Restaurant.class);
+  //       restaurants.add(res);
+  //     }
+  //   }
+  //   System.out.println("Sending" + restaurants);
+  //   return restaurants;
+
+  // }
 
   // TODO: CRIO_TASK_MODULE_REDIS
   // We want to use cache to speed things up. Write methods that perform the same functionality,
