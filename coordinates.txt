@@ -1,2 +1,2 @@
-latitude=23.55
-longitude=87.31
+latitude=12.9
+longitude=77.8

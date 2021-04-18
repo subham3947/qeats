@@ -16,6 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.crio.qeats.QEatsApplication;
+import com.crio.qeats.configs.RedisConfiguration;
 import com.crio.qeats.dto.Restaurant;
 import com.crio.qeats.models.RestaurantEntity;
 import com.crio.qeats.repositories.RestaurantRepository;
@@ -63,12 +64,19 @@ public class RestaurantRepositoryServiceTest {
   @MockBean
   private RestaurantRepository restaurantRepository;
 
+  @Autowired
+  private RedisConfiguration redisConfiguration;
 
   @Value("${spring.redis.port}")
   private int redisPort;
 
   private RedisServer server = null;
 
+  @BeforeEach
+  public void setupRedisServer() throws IOException {
+    System.out.println("Redis port = " + redisPort);
+    redisConfiguration.setRedisPort(redisPort);
+  }
 
 
   @BeforeEach
@@ -83,16 +91,19 @@ public class RestaurantRepositoryServiceTest {
   @AfterEach
   void teardown() {
     mongoTemplate.dropCollection("restaurants");
+    redisConfiguration.destroyCache();
   }
 
   @Test
   void restaurantsCloseByAndOpenNow() {
     assertNotNull(restaurantRepositoryService);
 
+    when(restaurantRepository.findAll()).thenReturn(allRestaurants);
+
     List<Restaurant> allRestaurantsCloseBy = restaurantRepositoryService
         .findAllRestaurantsCloseBy(20.0, 30.0, LocalTime.of(18, 1), 3.0);
 
-    verify(restaurantRepository, times(1)).findAll();
+    //verify(restaurantRepository, times(1)).findAll();
     assertEquals(2, allRestaurantsCloseBy.size());
     assertEquals("11", allRestaurantsCloseBy.get(0).getRestaurantId());
     assertEquals("12", allRestaurantsCloseBy.get(1).getRestaurantId());
@@ -144,11 +155,9 @@ public class RestaurantRepositoryServiceTest {
 
 
   void searchedAttributesIsSubsetOfRetrievedRestaurantAttributes() {
-    // TODO
   }
 
   void searchedAttributesIsCaseInsensitive() {
-    // TODO
   }
 
   private List<RestaurantEntity> listOfRestaurants() throws IOException {

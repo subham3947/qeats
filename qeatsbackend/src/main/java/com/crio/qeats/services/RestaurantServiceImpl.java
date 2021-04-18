@@ -56,7 +56,10 @@ public class RestaurantServiceImpl implements RestaurantService {
     log.info(getRestaurantsResponse);
     return getRestaurantsResponse;
   }
+  // @Override
+  // public GetRestaurantsResponse findAllRestaurantsCloseBy(
+  //     GetRestaurantsRequest getRestaurantsRequest, LocalTime currentTime) {
 
+  //   return null;
 
 }
-

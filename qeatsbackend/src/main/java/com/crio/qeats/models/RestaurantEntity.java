@@ -6,6 +6,7 @@
 
 package com.crio.qeats.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotNull;
@@ -18,8 +19,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @Document(collection = "restaurants")
 @NoArgsConstructor
-public class RestaurantEntity {
-
+public class RestaurantEntity implements Serializable {
   @Id
   private String id;
 
@@ -49,6 +49,15 @@ public class RestaurantEntity {
 
   @NotNull
   private List<String> attributes = new ArrayList<>();
+
+  @Override
+  public String toString() {
+    return "Restaurant [id=" + id + ", restaurantId=" + restaurantId + ", name=" + name 
+      +  ", city=" + city + ", imageUrl=" + imageUrl +  ", latitude=" + latitude 
+      + ", longitude=" + longitude + ", opensAt=" + opensAt + ", closesAt=" + longitude  + "]";
+ 
+  }
+  
 
 }
 
