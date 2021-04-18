@@ -107,8 +107,8 @@ public class RedisConfiguration {
    */
   public void destroyCache() {
     try {
+      jedisPool.getResource().flushAll();
       jedisPool.destroy();
-      jedisPool = null;
     } catch (JedisConnectionException e) {
       System.out.print("Closed");
     }

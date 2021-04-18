@@ -35,8 +35,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
@@ -143,20 +141,7 @@ public class RestaurantRepositoryServiceImpl implements RestaurantRepositoryServ
     return restaurantEntities;
   }
 
-  // public List<Restaurant> getRestaurantList(List<RestaurantEntity> restaurantEntities) {
-  //   List<Restaurant> restaurants = new ArrayList<Restaurant>();
-  //   for (RestaurantEntity restaurantEntity : restaurantEntities) {
-  //     if (isOpenNow(currentTime, restaurantEntity.) 
-  //         && isRestaurantCloseByAndOpen(restaurantEntity, currentTime,
-  //         latitude, longitude, servingRadiusInKms)) {
-  //       Restaurant res = modelMapperProvider.map(restaurantEntity, Restaurant.class);
-  //       restaurants.add(res);
-  //     }
-  //   }
-  //   System.out.println("Sending" + restaurants);
-  //   return restaurants;
-
-  // }
+  
 
   // TODO: CRIO_TASK_MODULE_REDIS
   // We want to use cache to speed things up. Write methods that perform the same functionality,
