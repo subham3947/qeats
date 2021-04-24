@@ -7,6 +7,7 @@
 package com.crio.qeats.repositoryservices;
 
 import com.crio.qeats.dto.Restaurant;
+import com.crio.qeats.models.RestaurantEntity;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -31,6 +32,46 @@ public interface RestaurantRepositoryService {
    */
   List<Restaurant> findAllRestaurantsCloseBy(Double latitude, Double longitude,
       LocalTime currentTime, Double servingRadiusInKms);
+
+
+  /**
+   * Get the list of open restaurants within the specified serving radius.
+   *   - Ensure the restaurant is open currently.
+   * @param searchString Query string for restaurants
+   * @return list of restaurants
+   */
+  List<Restaurant> findRestaurantsByName(Double latitude, Double longitude,
+      String searchString, LocalTime currentTime, Double servingRadiusInKms);
+
+  /**
+   * Get the list of open restaurants within the specified serving radius.
+   * @param searchString Query string for item attributes
+   * @return list of restaurants
+   */
+  List<Restaurant> findRestaurantsByAttributes(
+      Double latitude, Double longitude, String searchString,
+      LocalTime currentTime, Double servingRadiusInKms);
+
+  /**
+   * Get the list of open restaurants within the specified serving radius which service item
+   * name in search string.
+   * @param searchString The food items to search for
+   * @return list of restaurants
+   */
+  List<Restaurant> findRestaurantsByItemName(Double latitude, Double longitude,
+      String searchString, LocalTime currentTime, Double servingRadiusInKms);
+
+  /**
+   * Get the list of open restaurants within the specified serving radius which have items of
+   * specified attributes in search string.
+   * @param searchString The item attributes to search for
+   * @return list of restaurants
+   */
+  List<Restaurant> findRestaurantsByItemAttributes(Double latitude, Double longitude,
+      String searchString, LocalTime currentTime, Double servingRadiusInKms);
+
+
+
 
 }
 

@@ -79,6 +79,7 @@ class RestaurantRepositoryServiceCacheTest {
     allRestaurantsCloseBy = restaurantRepositoryService
         .findAllRestaurantsCloseBy(20.0, 30.0, LocalTime.of(18, 1), 3.0);
     GeoHash geoHash = GeoHash.withCharacterPrecision(20.0, 30.0, 7);
+
     verify(mockRestaurantRepository, times(1)).findAll();
     assertNotNull(jedis.get(geoHash.toBase32()));
     assertEquals(2, allRestaurantsCloseBy.size());

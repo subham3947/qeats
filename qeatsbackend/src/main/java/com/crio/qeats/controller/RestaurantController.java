@@ -11,14 +11,18 @@ import com.crio.qeats.exchanges.GetRestaurantsRequest;
 import com.crio.qeats.exchanges.GetRestaurantsResponse;
 import com.crio.qeats.services.RestaurantService;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 import lombok.extern.log4j.Log4j2;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,22 +53,30 @@ public class RestaurantController {
   public ResponseEntity<GetRestaurantsResponse> getRestaurants(
        GetRestaurantsRequest getRestaurantsRequest) {
 
-    log.info("getRestaurants called with {}", getRestaurantsRequest);
-    GetRestaurantsResponse getRestaurantsResponse;
-
+    GetRestaurantsResponse getRestaurantsResponse = new GetRestaurantsResponse();
     // CHECKSTYLE:OFF
     if (getRestaurantsRequest.getLatitude() != null && getRestaurantsRequest.getLongitude() != null
         && getRestaurantsRequest.getLatitude() >= -90 && getRestaurantsRequest.getLatitude() <= 90
         && getRestaurantsRequest.getLongitude() >= -180 
         && getRestaurantsRequest.getLongitude() <= 180) {
-      getRestaurantsResponse = restaurantService.findAllRestaurantsCloseBy(
-        getRestaurantsRequest, LocalTime.now());
-      List<Restaurant> restaurants = getRestaurantsResponse.getRestaurants();
-      for (Restaurant res : restaurants) {
-        res.setName(res.getName().replaceAll("[^\\x00-\\x7F]", "?"));
+      if (getRestaurantsRequest.getSearchFor() == null 
+          || getRestaurantsRequest.getSearchFor() == "") {
+        getRestaurantsResponse = restaurantService.findAllRestaurantsCloseBy(
+          getRestaurantsRequest, LocalTime.now());
+      } else {
+        getRestaurantsResponse = restaurantService
+        .findRestaurantsBySearchQuery(getRestaurantsRequest, LocalTime.now());
       }
-      getRestaurantsResponse.setRestaurants(restaurants);
-
+      try {
+        List<Restaurant> restaurants = getRestaurantsResponse.getRestaurants();
+        for (Restaurant res : restaurants) {
+          res.setName(res.getName().replaceAll("[^\\x00-\\x7F]", "?"));
+        }
+        getRestaurantsResponse.setRestaurants(restaurants);
+        
+      } catch (Exception e) {
+        //TODO: handle exception
+      }
       
       return ResponseEntity.ok().body(getRestaurantsResponse);
     } else {

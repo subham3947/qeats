@@ -102,6 +102,6 @@ public class Restaurant {
   public void setAttributes(List<String> attributes) {
     this.attributes = attributes;
   }
-
 }
+
 

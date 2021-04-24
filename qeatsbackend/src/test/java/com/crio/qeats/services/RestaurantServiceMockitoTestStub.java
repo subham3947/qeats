@@ -66,23 +66,38 @@ public class RestaurantServiceMockitoTestStub {
   }
 
   
+  // @Test
+  // public void  testFindNearbyWithin5km() throws IOException {
+  //   //TODO: CRIO_TASK_MODULE_MOCKITO
+  //   // Following test case is failing, you have to
+  //   // debug it, find out whats going wrong and fix it.
+  //   // Notes - You can create additional mocks, setup the same and try out.
+    
+  //   when(restaurantRepositoryServiceMock
+  //           .findAllRestaurantsCloseBy(any(Double.class), any(Double.class),
+  //               eq(LocalTime.of(3, 0)),
+  //               eq(5.0)))
+  //           .thenReturn(Arrays.asList(restaurant1, restaurant2));
+    
+  //   GetRestaurantsResponse allRestaurantsCloseBy = restaurantService
+  //       .findAllRestaurantsCloseBy(new GetRestaurantsRequest(20.0, 30.0),
+  //           LocalTime.of(3, 0));
+    
+
+
   @Test
   public void  testFindNearbyWithin5km() throws IOException {
-    //TODO: CRIO_TASK_MODULE_MOCKITO
-    // Following test case is failing, you have to
-    // debug it, find out whats going wrong and fix it.
-    // Notes - You can create additional mocks, setup the same and try out.
-    
+
     when(restaurantRepositoryServiceMock
             .findAllRestaurantsCloseBy(any(Double.class), any(Double.class),
                 eq(LocalTime.of(3, 0)),
                 eq(5.0)))
             .thenReturn(Arrays.asList(restaurant1, restaurant2));
-    
+
     GetRestaurantsResponse allRestaurantsCloseBy = restaurantService
         .findAllRestaurantsCloseBy(new GetRestaurantsRequest(20.0, 30.0),
             LocalTime.of(3, 0));
-    
+
     assertEquals(2, allRestaurantsCloseBy.getRestaurants().size());
     assertEquals("11", allRestaurantsCloseBy.getRestaurants().get(0).getRestaurantId());
     assertEquals("12", allRestaurantsCloseBy.getRestaurants().get(1).getRestaurantId());
@@ -133,6 +148,7 @@ public class RestaurantServiceMockitoTestStub {
     //  Both of the mocks created above are called.
     //  Our assessment will verify whether these mocks are called as per the definition.
     //  Refer to the assertions below in order to understand the requirements better.
+
 
     assertEquals(2, allRestaurantsCloseByOffPeakHours.getRestaurants().size());
     assertEquals("11", allRestaurantsCloseByOffPeakHours.getRestaurants().get(0).getRestaurantId());
