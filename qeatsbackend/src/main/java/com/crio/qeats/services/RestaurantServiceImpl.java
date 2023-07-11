@@ -83,7 +83,7 @@ public class RestaurantServiceImpl implements RestaurantService {
           getRestaurantsRequest.getLongitude(), getRestaurantsRequest.getSearchFor(), 
           currentTime, findRadius(hour)));
     }
-    System.out.println("Getting this : " + restaurantSet);
+    
     return new GetRestaurantsResponse(new ArrayList<Restaurant>(restaurantSet));
   }
 
